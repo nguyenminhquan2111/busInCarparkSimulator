@@ -4,27 +4,47 @@ import React, { useState } from "react";
 function App() {
   const direction = ["north", "east", "south", "west"];
 
+  const checkBus = () => {
+    let angle = 0;
+    let f = position.f;
+
+    if (f.includes("north")) {
+      angle = -90;
+    } else if (f.includes("south")) {
+      angle = 90;
+    } else if (f.includes("west")) {
+      angle = 180;
+    } else {
+      angle = 0;
+    }
+    return angle;
+  };
+
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
-    f: "",
+    f: "east",
+    busf: 0,
   });
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     e.preventDefault();
+    let angle = checkBus();
     setPosition({
       ...position,
       [name]: value.toLowerCase().trim(),
+      busf: angle,
     });
+    console.log(position);
   };
 
   const handleLeft = (e) => {
+    // checkBus();
     const directionR = [...direction].reverse();
     let lastFace = "";
 
     for (let i = 0; i < directionR.length - 1; i++) {
-      // e.preventDefault();
       if (position.f === directionR[directionR.length - 1]) {
         lastFace = directionR[0];
       }
@@ -32,20 +52,18 @@ function App() {
         lastFace = directionR[i + 1];
       }
     }
+
     setPosition({
       ...position,
-
       f: lastFace,
+      busf: position.busf - 90,
     });
-    // console.log(lastFace);
-    console.log(position.busf);
   };
 
-  const handleRight = (e) => {
+  const handleRight = () => {
     let lastFace = "";
 
     for (let i = 0; i < direction.length - 1; i++) {
-      // e.preventDefault();
       if (position.f === direction[direction.length - 1]) {
         lastFace = direction[0];
       }
@@ -55,7 +73,7 @@ function App() {
     }
     setPosition({
       ...position,
-
+      busf: position.busf + 90,
       f: lastFace,
     });
     console.log(position.busf);
@@ -102,6 +120,8 @@ function App() {
             });
         return { ...position };
       }
+      default:
+        return { ...position };
     }
   };
 
@@ -132,7 +152,7 @@ function App() {
           />
         </div>
         <div className="form-group">
-          <input
+          {/* <input
             type="text"
             className="form-control"
             id="positionFace"
@@ -140,7 +160,18 @@ function App() {
             name="f"
             value={position.f}
             onChange={handleOnChange}
-          />
+          /> */}
+          <select
+            className="form-control"
+            name="f"
+            value={position.f}
+            onChange={handleOnChange}
+          >
+            <option value="north">north</option>
+            <option value="east">east</option>
+            <option value="south">south</option>
+            <option value="west">west</option>
+          </select>
         </div>
       </div>
       <button id="btnLeft" className="btn btn-danger" onClick={handleLeft}>
@@ -161,6 +192,7 @@ function App() {
             position: "absolute",
             bottom: position.y * 100,
             left: position.x * 100,
+            transform: `rotate(${position.busf}deg)`,
           }}
         ></div>
       </div>
