@@ -5,6 +5,12 @@ import Report from "./Report";
 export default function Form() {
   const direction = ["north", "east", "south", "west"];
 
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0,
+    f: "east",
+    busf: 0,
+  });
   const checkBus = (f) => {
     let angle = 0;
     if (f.includes("north")) {
@@ -18,14 +24,6 @@ export default function Form() {
     }
     return angle;
   };
-
-  const [position, setPosition] = useState({
-    x: 0,
-    y: 0,
-    f: "east",
-    busf: 0,
-  });
-
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     const angle = checkBus(value.toLowerCase().trim());
@@ -36,9 +34,6 @@ export default function Form() {
     };
 
     setPosition(tempState);
-
-    console.log(angle, position.f);
-    console.log(position);
   };
 
   const handleLeft = () => {
